@@ -141,6 +141,24 @@ void execute_single_command(char *cmd) {
 }
 
 
+
+void execute_command(char *cmd) {
+    char *commands[MAX_ARGS]; // Komutları tutacak dizi
+    char *token = strtok(cmd, ";"); // Komutları ';' ile ayır
+    int i = 0;
+
+    while (token != NULL) {
+        commands[i++] = token; // Komutu diziye ekle
+        token = strtok(NULL, ";");
+    }
+    commands[i] = NULL; // Komut dizisinin sonunu belirt
+
+    for (int j = 0; commands[j] != NULL; j++) {
+        execute_single_command(commands[j]); // Her bir komutu çalıştır
+    }
+}
+
+
 int main() {
     signal(SIGCHLD, handle_sigchld); // SIGCHLD sinyalini yakala
     char cmd[MAX_CMD_LEN];
