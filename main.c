@@ -10,7 +10,19 @@
 #define MAX_CMD_LEN 1024 // Maksimum komut uzunluğu
 #define MAX_ARGS 64 // Maksimum argüman sayısı
 
+void prompt() {
+    printf("> "); // Kullanıcıdan komut istemi
+    fflush(stdout); // Çıkış akışını temizle
+}
 
+void handle_sigchld(int sig) {
+    int status;
+    pid_t pid;
+    while ((pid = waitpid(-1, &status, WNOHANG)) > 0) { // Çocuk süreçlerin durumunu kontrol et
+        printf("[%d] retval: %d\n", pid, WEXITSTATUS(status)); // Çocuk sürecin çıkış durumunu yazdır
+        prompt(); // Komut istemini tekrar göster
+    }
+}
 void execute_single_command(char *cmd) {
     char *args[MAX_ARGS]; // Argümanları tutacak dizi
     char *token = strtok(cmd, " "); // Komutu boşluklara göre parçala
